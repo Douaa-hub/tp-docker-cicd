@@ -24,6 +24,7 @@ jobs:
         run: docker build -t backend-test ./backend
 
       # 4) Build Frontend
+      - name: Build frontend image
         run: docker build -t frontend-test ./frontend
 
       # 5) Build Database
