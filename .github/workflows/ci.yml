@@ -17,35 +17,30 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      # Build backend
       - name: Build backend image
         run: docker build -t backend-img ./backend
 
-      # Build frontend
       - name: Build frontend image
         run: docker build -t frontend-img ./frontend
 
-      # Build database
       - name: Build database image
         run: docker build -t database-img ./database
 
-      # Run docker-compose
       - name: Start services
-        run: docker-compose up -d
+        run: docker compose up -d
 
       - name: Wait for backend to start
         run: sleep 5
 
-      # Test backend /api
       - name: Test API endpoint
         run: curl -f http://localhost:3000/api
 
-      # Test backend /db
       - name: Test DB endpoint
         run: curl -f http://localhost:3000/db
 
       - name: Stop containers
-        run: docker-compose down
+        run: docker compose down
+
 
 
       # 6) Done
