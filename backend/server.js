@@ -12,11 +12,11 @@ const PORT = process.env.PORT || 3000;
 
 // Database connection configuration
 const pool = new Pool({
-  host: process.env.DB_HOST || "db",
+  host: process.env.DB_HOST || "database",   // Docker service name
   port: process.env.DB_PORT || 5432,
-  user: process.env.DB_USER || "admin",
-  password: process.env.DB_PASSWORD || "secret",
-  database: process.env.DB_NAME || "mydb",
+  user: process.env.DB_USER || "postgres",   // default postgres
+  password: process.env.DB_PASSWORD || "postgres", 
+  database: process.env.DB_NAME || "postgres",
 });
 
 // MIDDLEWARE CORS
@@ -54,6 +54,7 @@ app.get("/db", async (req, res) => {
       success: true,
     });
   } catch (err) {
+    console.error("DB ERROR:", err.message);
     res.status(500).json({
       message: "Database error",
       error: err.message,
