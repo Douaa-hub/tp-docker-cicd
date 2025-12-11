@@ -1,3 +1,7 @@
+
+git add docker-compose.yml
+git commit -m "Fix DB connection: use database service and env vars"
+git push origin main
 version: "3.9"
 
 services:
