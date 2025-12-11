@@ -1,7 +1,4 @@
 
-git add docker-compose.yml
-git commit -m "Fix DB connection: use database service and env vars"
-git push origin main
 version: "3.9"
 
 services:
@@ -25,10 +22,6 @@ services:
 
   database:
     build: ./database
-    environment:
-      POSTGRES_DB: mydb
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: secret
     ports:
       - "5432:5432"
     volumes:
