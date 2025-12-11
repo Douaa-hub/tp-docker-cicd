@@ -1,71 +1,38 @@
-
-
-
-
-
 const express = require("express");
 const cors = require("cors");
 const { Pool } = require("pg");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 
-// Database connection configuration
+// Database connection
 const pool = new Pool({
-  host: process.env.DB_HOST || "database",   // Docker service name
+  host: process.env.DB_HOST || "database",
   port: process.env.DB_PORT || 5432,
-  user: process.env.DB_USER || "postgres",   // default postgres
-  password: process.env.DB_PASSWORD || "postgres", 
-  database: process.env.DB_NAME || "postgres",
+  user: process.env.DB_USER || "admin",
+  password: process.env.DB_PASSWORD || "secret",
+  database: process.env.DB_NAME || "mydb",
 });
 
-// MIDDLEWARE CORS
-app.use(
-  cors({
-    origin: [
-      "http://localhost:8080",
-      "http://127.0.0.1:8080",
-      "http://localhost:*",
-      "http://backend"
-    ],
-    methods: ["GET", "POST", "OPTIONS"],
-    allowedHeaders: ["Content-Type"],
-  })
-);
+// CORS Middleware
+app.use(cors());
 
-// ROUTE API PRINCIPALE
+// API route
 app.get("/api", (req, res) => {
-  res.json({
-    message: "Hello from Backend!",
-    timestamp: new Date().toISOString(),
-    client: req.get("Origin") || "unknown",
-    success: true,
-  });
+  res.json({ message: "Hello from Backend!" });
 });
 
-// ROUTE DATABASE
+// DB route
 app.get("/db", async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM users");
-    res.json({
-      message: "Data from Database",
-      data: result.rows,
-      timestamp: new Date().toISOString(),
-      success: true,
-    });
+    res.json(result.rows);
   } catch (err) {
-    console.error("DB ERROR:", err.message);
-    res.status(500).json({
-      message: "Database error",
-      error: err.message,
-      success: false,
-    });
+    res.status(500).json({ error: err.message });
   }
 });
 
-// START SERVER
-app.listen(PORT, () => {
-  console.log(`Backend listening on port ${PORT}`);
-  console.log(`API endpoint:  http://localhost:${PORT}/api`);
-  console.log(`DB endpoint:   http://localhost:${PORT}/db`);
+// Start server
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Backend running on port ${PORT}`);
 });
