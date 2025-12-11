@@ -3,8 +3,6 @@ name: CI - Build & Test Docker Project
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
   build-and-test:
@@ -21,56 +19,6 @@ jobs:
           sudo chmod +x /usr/local/bin/docker-compose
           docker-compose --version
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Start services
-        run: docker-compose up -d
-
-      - name: Wait backend
-        run: sleep 7
-
-      - name: Test API endpoint
-        run: curl -f http://localhost:3000/api
-
-      - name: Test DB endpoint
-        run: curl -f http://localhost:3000/db
-
-      - name: Stop containers
-        run: docker-compose down
-
-      - name: Build complete
-        run: echo "CI Passed Successfully!"
-name: CI - Build & Test Docker Project
-
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-
-jobs:
-  build-and-test:
-    runs-on: ubuntu-latest
-
-    steps:
-      # 1) Checkout code
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      # 2) Install Docker Compose (GitHub runner does NOT include it by default)
-      - name: Install Docker Compose
-        run: |
-          sudo curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) \
-            -o /usr/local/bin/docker-compose
-          sudo chmod +x /usr/local/bin/docker-compose
-          docker-compose --version
-
-      # 3) Set up Docker Buildx
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      # 4) Build all images
       - name: Build backend image
         run: docker build -t backend-img ./backend
 
@@ -80,28 +28,17 @@ jobs:
       - name: Build database image
         run: docker build -t database-img ./database
 
-      # 5) Start Docker Compose services
       - name: Start services
         run: docker-compose up -d
 
-      # 6) Wait for backend to start
       - name: Wait for backend to start
         run: sleep 5
 
-      # 7) Test API endpoint
       - name: Test API endpoint
         run: curl -f http://localhost:3000/api
 
-      # 8) Test DB endpoint
-        run: curl -f http://localhost:3000/db
       - name: Test DB endpoint
         run: curl -f http://localhost:3000/db
 
-      # 9) Stop containers
       - name: Stop containers
         run: docker-compose down
-
-      # 10) CI Completed
-      - name: Build complete
-        run: echo "All Docker images built and tested successfully!"
-
