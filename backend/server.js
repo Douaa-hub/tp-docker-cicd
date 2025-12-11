@@ -14,25 +14,27 @@ const pool = new Pool({
   database: process.env.DB_NAME || "mydb",
 });
 
-// CORS Middleware
+// CORS
 app.use(cors());
 
-// API route
+// API test endpoint
 app.get("/api", (req, res) => {
-  res.json({ message: "Hello from Backend!" });
+  res.json({ message: "Backend API OK!" });
 });
 
-// DB route
+// Database test endpoint
 app.get("/db", async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM users");
     res.json(result.rows);
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error: err.message });
   }
 });
 
-// Start server
+// IMPORTANT: bind to 0.0.0.0 for Docker
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Backend running on port ${PORT}`);
 });
+
