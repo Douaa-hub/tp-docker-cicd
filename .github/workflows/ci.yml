@@ -1,14 +1,17 @@
-name: CI - Basic Testing
+name: CI - Build & Test
 
 on:
   push:
-    branches: [ main ]
+    branches: [ "main" ]
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Set up job
+        run: echo "Starting CI job..."
+
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -20,9 +23,9 @@ jobs:
 
       - name: Build images
         run: |
-          docker build -t backend-img ./backend
-          docker build -t frontend-img ./frontend
-          docker build -t database-img ./database
+          docker build -t tp-docker-cicd-backend ./backend
+          docker build -t tp-docker-cicd-frontend ./frontend
+          docker build -t tp-docker-cicd-database ./database
 
       - name: Start services
         run: docker-compose up -d
@@ -32,3 +35,6 @@ jobs:
 
       - name: Stop containers
         run: docker-compose down
+
+      - name: Complete job
+        run: echo "Pipeline finished!"
